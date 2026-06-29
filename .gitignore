@@ -13,6 +13,9 @@ private/
 authentik/media/
 authentik/custom-templates/
 
+# Vaultwarden
+vaultwarden/data/
+
 # Logs
 logs/
 *.log
