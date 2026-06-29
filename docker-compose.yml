@@ -24,6 +24,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.forwardedHeaders.insecure=true"
       - "--entrypoints.web.address=:80"
+      - "--serverstransport.insecureskipverify=true"
     environment:
       - DOCKER_API_VERSION=1.40
     volumes:

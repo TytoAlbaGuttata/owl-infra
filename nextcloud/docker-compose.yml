@@ -5,18 +5,31 @@ services:
     image: nextcloud/all-in-one:latest
     restart: always
     container_name: nextcloud-aio-mastercontainer
+    security_opt:
+      - "no-new-privileges:true"
     volumes:
       - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    ports:
-      - "8080:8080"
     environment:
       - APACHE_PORT=11000
       - APACHE_IP_BINDING=0.0.0.0
       - NEXTCLOUD_DATADIR=${NEXTCLOUD_DATADIR}
       - SKIP_DOMAIN_VALIDATION=true
+    networks:
+      - proxy-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud-aio.rule=Host(`nextcloud-admin.owl-nest.ch`)"
+      - "traefik.http.routers.nextcloud-aio.entrypoints=web"
+      - "traefik.http.services.nextcloud-aio.loadbalancer.server.port=8080"
+      - "traefik.docker.network=proxy-net"
+      - "traefik.http.services.nextcloud-aio.loadbalancer.server.scheme=https"
+      - "traefik.http.routers.nextcloud-aio.middlewares=authentik@docker"
 
 volumes:
   nextcloud_aio_mastercontainer:
     name: nextcloud_aio_mastercontainer
 
+networks:
+  proxy-net:
+    external: true
