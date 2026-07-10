@@ -18,6 +18,12 @@ services:
     image: vikunja/vikunja:latest
     container_name: vikunja
     restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
     environment:
       VIKUNJA_DATABASE_HOST: db_vikunja
       VIKUNJA_DATABASE_PASSWORD: ${DB_PASSWORD}
@@ -25,8 +31,14 @@ services:
       VIKUNJA_DATABASE_USER: ${DB_USER}
       VIKUNJA_DATABASE_DATABASE: ${DB_NAME}
       VIKUNJA_SERVICE_SECRET: ${VIKUNJA_SECRET}
-      VIKUNJA_SERVICE_PUBLICURL: https://tasks.owl-nest.ch/ # L'URL publique de ton instance
-      VIKUNJA_SERVICE_ENABLEREGISTRATION: "true" # À passer à false plus tard !
+      VIKUNJA_SERVICE_PUBLICURL: https://tasks.owl-nest.ch/
+      VIKUNJA_SERVICE_ENABLEREGISTRATION: "false"
+      VIKUNJA_AUTH_LOCAL_ENABLED: false
+      VIKUNJA_AUTH_OPENID_ENABLED: true
+      VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_NAME: authentik
+      VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_AUTHURL: ${OPENID_AUTH_URL}
+      VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID: ${OPENID_CLIENT_ID}
+      VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET: ${OPENID_CLIENT_SECRET}
     volumes:
       - files:/app/vikunja/files
     depends_on:
