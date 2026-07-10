@@ -23,6 +23,7 @@ services:
       - "traefik.http.routers.sonar.rule=Host(`sonar.owl-nest.ch`)"
       - "traefik.http.routers.sonar.entrypoints=web"
       - "traefik.http.services.sonar.loadbalancer.server.port=9000"
+      - "traefik.docker.network=proxy-net"
 
   db_sonarqube:
     image: postgres:15
