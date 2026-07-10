@@ -3,7 +3,12 @@ name: owl-authentik
 services:
   postgresql:
     image: docker.io/library/postgres:16-alpine
+    container_name: authentik-db
     restart: unless-stopped
+    user: "70:70"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       start_period: 20s
@@ -16,13 +21,21 @@ services:
       POSTGRES_PASSWORD: ${PG_PASS:?database password required}
       POSTGRES_USER: ${PG_USER:-authentik}
       POSTGRES_DB: ${PG_DB:-authentik}
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
     networks:
       - authentik-internal
 
   redis:
     image: docker.io/library/redis:alpine
+    container_name: authentik-redis
     command: --save 60 1 --loglevel warning
     restart: unless-stopped
+    user: "999:999"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
       start_period: 20s
@@ -31,12 +44,19 @@ services:
       timeout: 3s
     volumes:
       - redis:/data
+    tmpfs:
+      - /tmp
     networks:
       - authentik-internal
 
   server:
     image: ghcr.io/goauthentik/server:${AUTHENTIK_TAG}
+    container_name: authentik-server
     restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - "no-new-privileges:true"
     command: server
     environment:
       AUTHENTIK_REDIS__HOST: redis
@@ -49,6 +69,9 @@ services:
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
+    tmpfs:
+      - /tmp
+      - /dev/shm
     networks:
       - authentik-internal
       - proxy-net
@@ -62,9 +85,15 @@ services:
       - "traefik.http.middlewares.authentik.forwardauth.address=http://server:9000/outpost.goauthentik.io/auth/traefik"
       - "traefik.http.middlewares.authentik.forwardauth.trustForwardHeader=true"
       - "traefik.http.middlewares.authentik.forwardauth.authResponseHeaders=X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version"
+
   worker:
     image: ghcr.io/goauthentik/server:${AUTHENTIK_TAG}
+    container_name: authentik-worker
     restart: unless-stopped
+    user: "1000:985"
+    read_only: true
+    security_opt:
+      - "no-new-privileges:true"
     command: worker
     environment:
       AUTHENTIK_REDIS__HOST: redis
@@ -74,12 +103,14 @@ services:
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
       AUTHENTIK_ERROR_REPORTING__ENABLED: ${AUTHENTIK_ERROR_REPORTING__ENABLED:-false}
-    user: root
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./media:/media
       - ./certs:/certs
       - ./custom-templates:/templates
+    tmpfs:
+      - /tmp
+      - /dev/shm
     networks:
       - authentik-internal
 

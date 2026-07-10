@@ -1,0 +1,36 @@
+name: owl-vaultwarden
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    # user: "1000:1000" 
+    read_only: true
+
+    tmpfs:
+      - /tmp:size=50M
+    volumes:
+      - ./data:/data
+
+    networks:
+      - proxy-net
+
+    environment:
+      - WEBSOCKET_ENABLED=true
+      - SIGNUPS_ALLOWED=false
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy-net"
+      # On utilise ton nom de domaine
+      - "traefik.http.routers.vaultwarden.rule=Host(`warden.owl-nest.ch`)"
+      # On utilise l'entrypoint web car Cloudflare gère le SSL
+      - "traefik.http.routers.vaultwarden.entrypoints=web"
+      - "traefik.http.services.vaultwarden.loadbalancer.server.port=80"
+
+networks:
+  proxy-net:
+    external: true

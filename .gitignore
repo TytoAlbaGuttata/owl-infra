@@ -13,6 +13,13 @@ private/
 authentik/media/
 authentik/custom-templates/
 
+# Vaultwarden
+vaultwarden/data/
+
+# Vikunja
+vikunja/db_data/
+vikunja/files/
+
 # Logs
 logs/
 *.log

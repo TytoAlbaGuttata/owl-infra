@@ -2,25 +2,24 @@ discovery.docker "containers" {
   host = "unix:///var/run/docker.sock"
 }
 
+// On nettoie les noms ici pour tes dashboards
 discovery.relabel "docker_logs" {
   targets = discovery.docker.containers.targets
-  rule {
-    source_labels = ["__meta_docker_container_id"]
-    target_label  = "__path__"
-    replacement   = "/var/lib/docker/containers/$1/$1-json.log"
-  }
+
   rule {
     source_labels = ["__meta_docker_container_name"]
     regex         = "/(.+)"
     target_label  = "container_name"
   }
+
   rule {
     replacement   = "docker"
     target_label  = "job"
   }
 }
 
-loki.source.file "docker_logs" {
+loki.source.docker "docker_logs" {
+  host       = "unix:///var/run/docker.sock"
   targets    = discovery.relabel.docker_logs.output
   forward_to = [loki.write.loki_server.receiver]
 }
