@@ -1,0 +1,63 @@
+name: vikunja
+
+services:
+  db_vikunja:
+    image: postgres:15-alpine
+    container_name: vikunja_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - vikunja-internal
+
+  vikunja:
+    image: vikunja/vikunja:latest
+    container_name: vikunja
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    environment:
+      VIKUNJA_DATABASE_HOST: db_vikunja
+      VIKUNJA_DATABASE_PASSWORD: ${DB_PASSWORD}
+      VIKUNJA_DATABASE_TYPE: postgres
+      VIKUNJA_DATABASE_USER: ${DB_USER}
+      VIKUNJA_DATABASE_DATABASE: ${DB_NAME}
+      VIKUNJA_SERVICE_SECRET: ${VIKUNJA_SECRET}
+      VIKUNJA_SERVICE_PUBLICURL: https://tasks.owl-nest.ch/ # L'URL publique de ton instance
+      VIKUNJA_SERVICE_ENABLEREGISTRATION: "true" # À passer à false plus tard !
+      VIKUNJA_AUTH_LOCAL_ENABLED: false
+      VIKUNJA_AUTH_OPENID_ENABLED: true
+      VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_NAME: authentik
+      VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_AUTHURL: ${OPENID_AUTH_URL}
+      VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID: ${OPENID_CLIENT_ID}
+      VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET: ${OPENID_CLIENT_SECRET}
+    volumes:
+      - files:/app/vikunja/files
+    depends_on:
+      - db_vikunja
+    networks:
+      - vikunja-internal
+      - proxy-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy-net"
+      - "traefik.http.routers.vikunja.rule=Host(`tasks.owl-nest.ch`)"
+      - "traefik.http.routers.vikunja.entrypoints=web"
+      - "traefik.http.services.vikunja.loadbalancer.server.port=3456"
+volumes:
+  db_data:
+  files:
+
+networks:
+  proxy-net:
+    external: true
+  vikunja-internal:
+    internal: true
