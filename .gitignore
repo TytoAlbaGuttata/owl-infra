@@ -20,6 +20,9 @@ vaultwarden/data/
 vikunja/db_data/
 vikunja/files/
 
+# Adguard
+adguard/data/
+
 # Logs
 logs/
 *.log
