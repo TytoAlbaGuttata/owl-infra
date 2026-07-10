@@ -1,0 +1,24 @@
+http:
+  routers:
+    nextcloud-admin:
+      rule: "Host(`nextcloud-admin.owl-nest.ch`)"
+      service: nextcloud-admin-service
+      entryPoints:
+        - web
+
+    nextcloud-cloud:
+      rule: "Host(`cloud.owl-nest.ch`)"
+      service: nextcloud-cloud-service
+      entryPoints:
+        - web
+
+  services:
+    nextcloud-admin-service:
+      loadBalancer:
+        servers:
+          - url: "https://10.0.0.20:8080"
+
+    nextcloud-cloud-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.0.20:11000"
