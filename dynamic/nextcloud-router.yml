@@ -22,3 +22,4 @@ http:
       loadBalancer:
         servers:
           - url: "http://10.0.0.20:11000"
+
