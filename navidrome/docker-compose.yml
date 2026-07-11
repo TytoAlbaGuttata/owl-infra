@@ -1,0 +1,45 @@
+name: navidrome
+
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+
+    environment:
+      ND_LOGLEVEL: info
+      ND_SCANSCHEDULE: 1h
+      ND_REVERSEPROXYUSERHEADER: "X-authentik-username"
+      ND_REVERSEPROXYWHITELIST: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+
+    volumes:
+      - ./data:/data
+      - ./music:/music:ro
+
+    networks:
+      - proxy-net
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy-net"
+      - "traefik.http.routers.navidrome-web.rule=Host(`music.owl-nest.ch`) && !PathPrefix(`/rest`) && !PathPrefix(`/ping.view`)"
+      - "traefik.http.routers.navidrome-web.entrypoints=web"
+      - "traefik.http.routers.navidrome-web.middlewares=authentik@docker"
+      - "traefik.http.routers.navidrome-web.service=navidrome-svc"
+      - "traefik.http.routers.navidrome-api.rule=Host(`music.owl-nest.ch`) && (PathPrefix(`/rest`) || PathPrefix(`/ping.view`))"
+      - "traefik.http.routers.navidrome-api.entrypoints=web"
+      - "traefik.http.routers.navidrome-api.service=navidrome-svc"
+      - "traefik.http.services.navidrome-svc.loadbalancer.server.port=4533"
+
+volumes:
+  navidrome_data:
+
+networks:
+  proxy-net:
+    external: true
