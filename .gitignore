@@ -23,6 +23,10 @@ vikunja/files/
 # Adguard
 adguard/data/
 
+# Navidrome
+navidrome/data/
+navidrome/music/
+
 # Logs
 logs/
 *.log
