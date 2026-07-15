@@ -1,0 +1,21 @@
+name: github-stats
+
+services:
+  github-stats:
+    build: .
+    container_name: github-stats
+    restart: unless-stopped
+    environment:
+      PAT_1: ${GIT_PAT}
+    networks:
+      - proxy-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy-net"
+      - "traefik.http.routers.github-stats.rule=Host(`stats.owl-nest.ch`)"
+      - "traefik.http.routers.github-stats.entrypoints=web"
+      - "traefik.http.services.github-stats.loadbalancer.server.port=9000"
+
+networks:
+  proxy-net:
+    external: true
