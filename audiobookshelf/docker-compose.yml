@@ -1,0 +1,37 @@
+name: audiobookshelf
+
+services:
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    environment:
+      - TZ=Europe/Zurich
+      - AUDIOBOOKSHELF_UID=1000
+      - AUDIOBOOKSHELF_GID=1000
+      - OIDC_ISSUER_URL=${OIDC_ISSUER_URL}
+      - OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
+      - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET}
+    volumes:
+      - ./config:/config:rw
+      - ./metadata:/metadata:rw
+      - ./logs:/config/logs:rw
+      - /mnt/ssd/books:/audiobooks:rw
+    networks:
+      - proxy-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy-net"
+      - "traefik.http.routers.audiobookshelf.rule=Host(`book.owl-nest.ch`)"
+      - "traefik.http.routers.audiobookshelf.entrypoints=web"
+      - "traefik.http.services.audiobookshelf.loadbalancer.server.port=80"
+
+networks:
+  proxy-net:
+    external: true
