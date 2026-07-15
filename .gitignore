@@ -27,6 +27,11 @@ adguard/data/
 navidrome/data/
 navidrome/music/
 
+# Audiobookshelf
+audiobookshelf/config
+audiobookshelf/logs
+audiobookshelf/metadata
+
 # Logs
 logs/
 *.log
