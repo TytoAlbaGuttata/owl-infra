@@ -4,33 +4,33 @@ Welcome to the infrastructure repository for my personal self-hosted cloud envir
 
 ## Software Stack
 
-This infrastructure relies on a modern, open-source stack designed for security, privacy, and performance:[cite: 1]
+This infrastructure relies on a modern, open-source stack designed for security, privacy, and performance:
 
-* **Network and ingress:**[cite: 1]
-  *  [Cloudflared](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) (Secure outbound tunnel, zero open ports)[cite: 1]
-  *  [Traefik v3](https://traefik.io/traefik/) (Dynamic Reverse Proxy)[cite: 1]
-  *  [AdGuard Home](https://adguard.com/en/adguard-home/overview.html) (Network-wide DNS ad and tracker blocker)[cite: 1]
+* **Network and ingress:**
+  *  [Cloudflared](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) (Secure outbound tunnel, zero open ports)
+  *  [Traefik v3](https://traefik.io/traefik/) (Dynamic Reverse Proxy)
+  *  [AdGuard Home](https://adguard.com/en/adguard-home/overview.html) (Network-wide DNS ad and tracker blocker)
 
-* **Identity and access management:**[cite: 1]
-   * [Authentik](https://goauthentik.io/) (Centralized SSO, SAML, and OIDC provider)[cite: 1]
+* **Identity and access management:**
+   * [Authentik](https://goauthentik.io/) (Centralized SSO, SAML, and OIDC provider)
 
-* **Services:**[cite: 1]
-  * [Nextcloud AIO](https://github.com/nextcloud/all-in-one) (Personal cloud, file sync, and collaboration)[cite: 1]. *Note: Hosted on a dedicated Intel Mac, with traffic dynamically routed via Traefik*[cite: 1].
-  * [Vaultwarden](https://github.com/dani-garcia/vaultwarden) (Self-hosted password manager)[cite: 1]
-  * [Vikunja](https://vikunja.io/) (Task management and to-do application)[cite: 1]
-  * [Actual Budget](https://actualbudget.org/) (Local-first personal finance system)[cite: 1]
-  * [Navidrome](https://www.navidrome.org/) (Music server and streamer)[cite: 1]
-  * [Audiobookshelf](https://www.audiobookshelf.org/) (Audiobook and podcast server)[cite: 1]
-  * [SonarQube](https://www.sonarsource.com/products/sonarqube/) (Continuous Code Quality and Security Analysis)[cite: 1]
-  * [GitHub Stats](https://github.com/stats-organization/github-stats-extended) (GitHub statistics dashboard)[cite: 1]
+* **Services:**
+  * [Nextcloud AIO](https://github.com/nextcloud/all-in-one) (Personal cloud, file sync, and collaboration). *Note: Hosted on a dedicated Intel Mac, with traffic dynamically routed via Traefik*.
+  * [Vaultwarden](https://github.com/dani-garcia/vaultwarden) (Self-hosted password manager)
+  * [Vikunja](https://vikunja.io/) (Task management and to-do application)
+  * [Actual Budget](https://actualbudget.org/) (Local-first personal finance system)
+  * [Navidrome](https://www.navidrome.org/) (Music server and streamer)
+  * [Audiobookshelf](https://www.audiobookshelf.org/) (Audiobook and podcast server)
+  * [SonarQube](https://www.sonarsource.com/products/sonarqube/) (Continuous Code Quality and Security Analysis)
+  * [GitHub Stats](https://github.com/stats-organization/github-stats-extended) (GitHub statistics dashboard)
 
-* **Monitoring and observability:**[cite: 1]
-  * [Prometheus](https://prometheus.io/) (Time-series database for metrics)[cite: 1]
-  * [Grafana](https://grafana.com/) (Visualization and dashboards)[cite: 1]
-  * [Node-Exporter](https://github.com/prometheus/node_exporter) (Hardware and OS metrics)[cite: 1]
-  * [cAdvisor](https://github.com/google/cadvisor) (Container resource usage)[cite: 1]
-  * [Grafana Loki](https://grafana.com/oss/loki/) (Log aggregation system)[cite: 1]
-  * [Grafana Alloy](https://grafana.com/oss/alloy/) (Log collector and pipeline)[cite: 1]
+* **Monitoring and observability:**
+  * [Prometheus](https://prometheus.io/) (Time-series database for metrics)
+  * [Grafana](https://grafana.com/) (Visualization and dashboards)
+  * [Node-Exporter](https://github.com/prometheus/node_exporter) (Hardware and OS metrics)
+  * [cAdvisor](https://github.com/google/cadvisor) (Container resource usage)
+  * [Grafana Loki](https://grafana.com/oss/loki/) (Log aggregation system)
+  * [Grafana Alloy](https://grafana.com/oss/alloy/) (Log collector and pipeline)
 
 ## Hardware
 
