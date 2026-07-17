@@ -1,0 +1,57 @@
+name: owl-wiki
+
+services:
+  db_wiki:
+    image: postgres:15-alpine
+    container_name: wiki_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - wiki-internal
+
+  wiki:
+    image: ghcr.io/requarks/wiki:2
+    container_name: wiki
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      - db_wiki
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: db_wiki
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    tmpfs:
+      - /tmp
+      - /wiki/logs
+      - /wiki/data/cache
+    volumes:
+      - ./data:/wiki/data
+    networks:
+      - proxy-net
+      - wiki-internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy-net"
+      - "traefik.http.routers.wiki.rule=Host(`wiki.owl-nest.ch`)"
+      - "traefik.http.routers.wiki.entrypoints=web"
+      - "traefik.http.services.wiki.loadbalancer.server.port=3000"
+
+volumes:
+  db_data:
+
+networks:
+  proxy-net:
+    external: true
+  wiki-internal:
+    internal: true
