@@ -32,9 +32,9 @@ services:
       DB_PASS: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
     tmpfs:
-      - /tmp
-      - /wiki/logs
-      - /wiki/data/cache
+      - /tmp:uid=1000,gid=1000
+      - /wiki/logs:uid=1000,gid=1000
+      - /wiki/data/cache:uid=1000,gid=1000
     volumes:
       - ./data:/wiki/data
     networks:
