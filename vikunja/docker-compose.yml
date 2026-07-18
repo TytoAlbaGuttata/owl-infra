@@ -31,8 +31,8 @@ services:
       VIKUNJA_DATABASE_USER: ${DB_USER}
       VIKUNJA_DATABASE_DATABASE: ${DB_NAME}
       VIKUNJA_SERVICE_SECRET: ${VIKUNJA_SECRET}
-      VIKUNJA_SERVICE_PUBLICURL: https://tasks.owl-nest.ch/ # L'URL publique de ton instance
-      VIKUNJA_SERVICE_ENABLEREGISTRATION: "true" # À passer à false plus tard !
+      VIKUNJA_SERVICE_PUBLICURL: https://tasks.owl-nest.ch/
+      VIKUNJA_SERVICE_ENABLEREGISTRATION: "false"
       VIKUNJA_AUTH_LOCAL_ENABLED: false
       VIKUNJA_AUTH_OPENID_ENABLED: true
       VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_NAME: authentik
