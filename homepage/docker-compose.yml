@@ -1,0 +1,39 @@
+name: owl-homepage
+
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+      - /app/.next/cache
+    environment:
+      - HOMEPAGE_ALLOWED_HOSTS=home.owl-nest.ch
+      - HOMEPAGE_VAR_WEATHER_KEY=${HOMEPAGE_VAR_WEATHER_KEY}
+      - HOMEPAGE_VAR_ADGUARD_USER=${HOMEPAGE_VAR_ADGUARD_USER}
+      - HOMEPAGE_VAR_ADGUARD_PASSWORD=${HOMEPAGE_VAR_ADGUARD_PASSWORD}
+    volumes:
+      - ./config:/app/config:ro
+      - ./images:/app/public/images:ro
+    networks:
+      - proxy-net
+      - monitor-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy-net"
+      - "traefik.http.routers.homepage.rule=Host(`home.owl-nest.ch`)"
+      - "traefik.http.routers.homepage.entrypoints=web"
+      - "traefik.http.routers.homepage.middlewares=authentik@docker"
+      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
+
+networks:
+  proxy-net:
+    external: true
+  monitor-net:
+    external: true
+    name: owl-monitoring_monitor-net

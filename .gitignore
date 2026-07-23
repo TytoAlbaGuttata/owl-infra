@@ -32,6 +32,10 @@ audiobookshelf/config
 audiobookshelf/logs
 audiobookshelf/metadata
 
+# Homepage
+homepage/config
+homepage/images
+
 # Logs
 logs/
 *.log
